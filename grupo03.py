@@ -1,17 +1,27 @@
 
 class Gramatica():
-    def __init__(self, gramatica):
-        """Constructor de la clase.
 
+    ReglasGramaticales = {}
+
+    def __init__(self, gramatica):
+        
+        """Constructor de la clase.
         Parameters
         ----------
         gramatica : string
             Representación de las producciones de una gramática determinada.
-
+        ------------------------------
             Ejemplo:
             "A:b A\nA:a\nA:A B c\nA:lambda\nB:b"
         """
-        pass
+
+        ListaReglas = gramatica.split("\n")
+        Antecedentes = [x[0] for x in CadenaReglas]
+        self.ReglasGramaticales = {x[0]:[y[2:len(y)] for y in ListaReglas if x[0] == y[0]]  for x in Antecedentes}
+    pass
+
+
+
 
     def isLL1(self):
         """Verifica si una gramática permite realizar derivaciones utilizando
