@@ -2,6 +2,7 @@
 class Gramatica():
 
     ReglasGramaticales = {}
+    Axioma = None
 
     def __init__(self, gramatica):
         
@@ -16,11 +17,46 @@ class Gramatica():
         """
 
         ListaReglas = gramatica.split("\n")
-        Antecedentes = [x[0] for x in CadenaReglas]
+        Antecedentes = [x[0] for x in ListaReglas]
         self.ReglasGramaticales = {x[0]:[y[2:len(y)] for y in ListaReglas if x[0] == y[0]]  for x in Antecedentes}
+        self.Axioma = Antecedentes[0]
     pass
 
+    def ObtenerFirst(Regla):
+  
+      First = []
+      Consecuente = Regla[2:len(Regla)]
+      PrimerElementoDelConsecuente = Consecuente.split(" ")[0]
+  
+      if ("lambda" in Consecuente) or Consecuente == "":
+        First.append("lambda")
+      elif PrimerElementoDelConsecuente.islower():
+        First.append(PrimerElementoDelConsecuente)
+      else:    
+    
+        NoTerminal = PrimerElementoDelConsecuente
 
+        for consecuente in ReglasGramaticales[NoTerminal]:
+          NuevaRegla = NoTerminal + ":" + consecuente
+          First.extend(ObtenerFirst(NuevaRegla))
+    
+        if "lambda" in First:      
+      
+          First.remove("lambda")
+
+          if (NoTerminal + " ") in Regla:
+            NuevaRegla = Regla.replace((NoTerminal + " "), "")
+          else:
+            NuevaRegla = Regla.replace(NoTerminal , "")
+          NuevoConsecuente = NuevaRegla[2:len(Regla)]
+      
+      
+          if NuevoConsecuente != "":
+            First.extend(ObtenerFirst(NuevaRegla))
+          else:
+            First.append("lambda") 
+
+      return set(First) 
 
 
     def isLL1(self):
@@ -32,6 +68,9 @@ class Gramatica():
         resultado : bool
             Indica si la gramática es o no LL1.
         """
+
+
+
         pass
 
     def parse(self, cadena):
