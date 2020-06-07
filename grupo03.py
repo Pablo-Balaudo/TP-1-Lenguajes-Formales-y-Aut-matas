@@ -1,6 +1,9 @@
 
-class Gramatica():
+""" Con este codigo importamos una funcion para eliminar elementos duplicados de un array o lista sin que esta se desordene"""
+from collections import OrderedDict
 
+class Gramatica():
+    
     ReglasGramaticales = {}
     Axioma = None
 
@@ -17,46 +20,10 @@ class Gramatica():
         """
 
         ListaReglas = gramatica.split("\n")
-        Antecedentes = [x[0] for x in ListaReglas]
-        self.ReglasGramaticales = {x[0]:[y[2:len(y)] for y in ListaReglas if x[0] == y[0]]  for x in Antecedentes}
+        Antecedentes =  list(OrderedDict.fromkeys([(x.split(":"))[0] for x in ListaReglas]))
+        self.ReglasGramaticales = {x:[y.split(":")[1] for y in ListaReglas if x == y.split(":")[0]]  for x in Antecedentes}
         self.Axioma = Antecedentes[0]
     pass
-
-    def ObtenerFirst(Regla):
-  
-      First = []
-      Consecuente = Regla[2:len(Regla)]
-      PrimerElementoDelConsecuente = Consecuente.split(" ")[0]
-  
-      if ("lambda" in Consecuente) or Consecuente == "":
-        First.append("lambda")
-      elif PrimerElementoDelConsecuente.islower():
-        First.append(PrimerElementoDelConsecuente)
-      else:    
-    
-        NoTerminal = PrimerElementoDelConsecuente
-
-        for consecuente in ReglasGramaticales[NoTerminal]:
-          NuevaRegla = NoTerminal + ":" + consecuente
-          First.extend(ObtenerFirst(NuevaRegla))
-    
-        if "lambda" in First:      
-      
-          First.remove("lambda")
-
-          if (NoTerminal + " ") in Regla:
-            NuevaRegla = Regla.replace((NoTerminal + " "), "")
-          else:
-            NuevaRegla = Regla.replace(NoTerminal , "")
-          NuevoConsecuente = NuevaRegla[2:len(Regla)]
-      
-      
-          if NuevoConsecuente != "":
-            First.extend(ObtenerFirst(NuevaRegla))
-          else:
-            First.append("lambda") 
-
-      return set(First) 
 
 
     def isLL1(self):
@@ -68,7 +35,6 @@ class Gramatica():
         resultado : bool
             Indica si la gramática es o no LL1.
         """
-
 
 
         pass
@@ -92,4 +58,54 @@ class Gramatica():
             Representación de las reglas a aplicar para derivar la cadena
             utilizando la gramática.
         """
+        for antecedente, consecuentes in ReglasGramaticales.items():
+            for consecuente in consecuentes:
+                pass
+
+            pass
         pass
+
+    def ObtenerFirst(Regla):
+  
+      First = [] 
+      """la regla es un diccionario, su clave (antecedente) es un string y el consecuente debe ser un array o lista que contanga los elementos de la misma separados (por causa del espacio)"""
+      antecedente = list(Regla.keys())[0]
+      consecuente = Regla[antecedente]
+ 
+      PrimerElementoDelConsecuente = consecuente[0]
+ 
+
+      if "lambda" in consecuente:
+        First.append("lambda")
+      elif PrimerElementoDelConsecuente.islower():
+        """si esta en misuscula, lo trataré como a un terminal y lo pondre en el First"""
+        First.append(PrimerElementoDelConsecuente)
+      else:    
+        """ahora sabemos que PrimerElementoDelConsecuente es un no terminal"""
+        for NuevoConsecuente in ReglasGramaticales[PrimerElementoDelConsecuente]:
+          """recorro las reglas buscando cada consecuente que tenga a """
+          NuevaRegla = { PrimerElementoDelConsecuente : NuevoConsecuente.split(" ") }
+          First.extend(ObtenerFirst(NuevaRegla))
+    
+        if "lambda" in First:         
+          First.remove("lambda")
+          consecuente.remove(PrimerElementoDelConsecuente)
+          NuevaRegla = {antecedente : consecuente}
+          if NuevoConsecuente:
+            First.extend(ObtenerFirst(NuevaRegla))
+          else:
+            First.append("lambda") 
+
+      return list(OrderedDict.fromkeys(First))
+    def ObtenerFollow(Antecedente):
+  
+      Follow = []
+  
+      if Antecedente == Axioma:
+        Follow.append("$")
+
+      for antecedente, consecuentes in ReglasGramaticales:
+        if Antecedente in consecuentes:
+            x = 1
+      return  list(OrderedDict.fromkeys(Follow))
+
