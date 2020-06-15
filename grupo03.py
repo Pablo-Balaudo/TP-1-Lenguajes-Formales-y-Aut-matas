@@ -6,6 +6,7 @@ class Gramatica():
     
     ReglasGramaticales = {}
     Axioma = None
+    Select = {}
 
     def __init__(self, gramatica):
         
@@ -58,11 +59,7 @@ class Gramatica():
             Representación de las reglas a aplicar para derivar la cadena
             utilizando la gramática.
         """
-        for antecedente, consecuentes in ReglasGramaticales.items():
-            for consecuente in consecuentes:
-                pass
-
-            pass
+       
         pass
 
     def ObtenerFirst(Regla):
@@ -132,3 +129,11 @@ class Gramatica():
   
         return  list(OrderedDict.fromkeys(Follow))
 
+    def ObtenerSelect():
+        self.Select = {(Antecedente + ":" + consecuente):"x"  for Antecedente, consecuentes in ReglasGramaticales.items() for consecuente in consecuentes}
+        for Antecedente, consecuentes in ReglasGramaticales.items():
+            for consecuente in consecuentes:
+                if "lambda" in ObtenerFirst({Antecedente : consecuente.split(" ")}): 
+                    self.Select[(Antecedente + ":" + consecuente)] = ObtenerFollow(Antecedente) 
+                else:
+                    self.Select[(Antecedente + ":" + consecuente)] = ObtenerFirst({Antecedente : consecuente.split(" ")})
