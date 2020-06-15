@@ -73,7 +73,7 @@ class Gramatica():
 
       if "lambda" in consecuente:
         First.append("lambda")
-      elif PrimerElementoDelConsecuente.islower():
+      elif PrimerElementoDelConsecuente[0].islower():
         """si esta en misuscula, lo trataré como a un terminal y lo pondre en el First"""
         First.append(PrimerElementoDelConsecuente)
       else:    
@@ -96,7 +96,7 @@ class Gramatica():
    
     def ObtenerFollow(antecedente_1):
         """ Este if es para utilizar mas abajo y fasilitar el convocar el metodo de follow dentro de si mismo """
-        if antecedente_1.islower():
+        if antecedente_1[0].islower():
             return [antecedente_1]
 
         Follow = []
@@ -114,7 +114,7 @@ class Gramatica():
                     tamaño_consecuente_2 = len(consecuente_2)
                     while (ubicacion + 1) < tamaño_consecuente_2:
                         SiguienteElemento = consecuente_2[ubicacion + 1]
-                        if consecuente_2[ubicacion + 1].islower():
+                        if consecuente_2[ubicacion + 1][0].islower():
                             Follow.append(SiguienteElemento)
                             break
                         elif antecedente_1 != antecedente_2:
